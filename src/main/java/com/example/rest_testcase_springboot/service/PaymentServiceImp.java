@@ -58,7 +58,7 @@ public class PaymentServiceImp implements PaymentService {
     //логика по проведению платежа
     @Override
     public PaymentStatus purchasePayment(PaymentType paymentType, BigDecimal amountInCart) {
-        // инициализируем стандартные значения переменных и устанавливаем статус платежа ProcessingPayment
+        // инициализируем наш платеж
         Payment payment = new Payment(amountInCart, PaymentLimit.PAYMENT_WITH_DEFAULT_LOYALTY_LIMIT, paymentType);
 
         //проверяем на входящие отрицательные числа
@@ -68,12 +68,6 @@ public class PaymentServiceImp implements PaymentService {
 
         //проверка на верхнее и нижнее пограничное состояние
         edgePaymentCaseCheck(payment);
-
-        //если у нас paymentLimit изменился, на верхнее пограничное состояние, то изменяем процент начислений бонусов, если нижнее, то добавляем комиссию к итоговому выставленному счету
-        switch (payment.getPaymentLimit()) {
-            case PAYMENT_WITH_HIGH_LOYALTY_LIMIT -> payment.setPercentOfPaymentToLoyalty(highLoyaltyPercent);
-            case PAYMENT_WITH_LOW_LOYALTY_LIMIT -> addFee(payment);
-        }
 
         //проверяем хватает ли денег на счету клиента для оплаты
         if (notEnoughMoneyInAccount(payment)) {
@@ -104,6 +98,12 @@ public class PaymentServiceImp implements PaymentService {
             payment.setPaymentLimit(PaymentLimit.PAYMENT_WITH_HIGH_LOYALTY_LIMIT);
         } else if (payment.getAmountInCart().compareTo(lowerDiscountLimit) <= 0) {
             payment.setPaymentLimit(PaymentLimit.PAYMENT_WITH_LOW_LOYALTY_LIMIT);
+        }
+
+        //если у нас paymentLimit изменился, на верхнее пограничное состояние, то изменяем процент начислений бонусов, если нижнее, то добавляем комиссию к итоговому выставленному счету
+        switch (payment.getPaymentLimit()) {
+            case PAYMENT_WITH_HIGH_LOYALTY_LIMIT -> payment.setPercentOfPaymentToLoyalty(highLoyaltyPercent);
+            case PAYMENT_WITH_LOW_LOYALTY_LIMIT -> addFee(payment);
         }
     }
 

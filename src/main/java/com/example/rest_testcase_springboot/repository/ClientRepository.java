@@ -2,7 +2,6 @@ package com.example.rest_testcase_springboot.repository;
 
 import com.example.rest_testcase_springboot.service.model.ClientBank;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -14,7 +13,6 @@ public class ClientRepository {
 
     //добавляем нашего клиента в репо
     private final ClientBank clientBank;
-
 
     //геттеры, сеттеры по клиенту
     public BigDecimal getWallet() {

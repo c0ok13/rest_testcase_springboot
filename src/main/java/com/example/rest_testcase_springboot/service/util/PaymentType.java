@@ -5,8 +5,8 @@ package com.example.rest_testcase_springboot.service.util;
 // за оплату, покупок
 
 public enum PaymentType {
-    Shop(10),
-    Online(17);
+    SHOP(10),
+    ONLINE(17);
 
     private final int loyaltyPercent;
     PaymentType(int loyaltyPercent) {

@@ -1,19 +1,11 @@
 package com.example.rest_testcase_springboot;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import com.example.rest_testcase_springboot.controller.RestApiController;
-import com.example.rest_testcase_springboot.repository.ClientRepository;
-import com.example.rest_testcase_springboot.service.PaymentService;
-import com.example.rest_testcase_springboot.service.PaymentServiceImp;
 import com.example.rest_testcase_springboot.service.model.ClientBank;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -57,8 +49,8 @@ class RestTestcaseSpringbootApplicationTests {
     //проверяем оплату по нижней границе, ключевое тут проверить что со счёта клиента было снято с комиссией, а баллы добавленные на счет не учитывали комиссию
     @Test
     public void LowerEdgeOfPaymentByOnlinePayment() throws Exception {
-        mockMvc.perform(get("/api/payment/Online/20")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("PaymentProcessed")));
+        mockMvc.perform(get("/api/payment/ONLINE/20")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("PAYMENT_PROCESSED")));
 
         mockMvc.perform(get("/api/money")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("4978.00")));
@@ -70,8 +62,8 @@ class RestTestcaseSpringbootApplicationTests {
     // проверяем оплату по верхней границе через магазин, ключевое тут проверить что количество баллов получаемых пользователем за оплату повышено
     @Test
     public void HigherEdgeOfPaymentByShopPayment() throws Exception {
-        mockMvc.perform(get("/api/payment/Shop/300")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("PaymentProcessed")));
+        mockMvc.perform(get("/api/payment/SHOP/300")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("PAYMENT_PROCESSED")));
 
         mockMvc.perform(get("/api/money")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("4700")));
@@ -84,8 +76,8 @@ class RestTestcaseSpringbootApplicationTests {
     //проверяем оплату находящуюся в рамках оплаты не имеющих каких-либо модификаций
     @Test
     public void PaymentWithDefaultLimitByShop() throws Exception {
-        mockMvc.perform(get("/api/payment/Shop/100")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("PaymentProcessed")));
+        mockMvc.perform(get("/api/payment/SHOP/100")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("PAYMENT_PROCESSED")));
 
         mockMvc.perform(get("/api/money")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("4900")));
@@ -97,8 +89,8 @@ class RestTestcaseSpringbootApplicationTests {
     //проверяем оплату превышающую баланс клиента
     @Test
     public void PaymentExceedsBalance() throws Exception {
-        mockMvc.perform(get("/api/payment/Shop/6000")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("NotEnoughMoneyOnTheAccount")));
+        mockMvc.perform(get("/api/payment/SHOP/6000")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("NOT_ENOUGH_MONEY_ON_THE_ACCOUNT")));
 
         mockMvc.perform(get("/api/money")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("5000")));
@@ -110,8 +102,8 @@ class RestTestcaseSpringbootApplicationTests {
     //проверяем на отрицательное число выставленное к оплате
     @Test
     public void PaymentWithNegativeValue() throws Exception {
-        mockMvc.perform(get("/api/payment/Shop/-100")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("NegativeValue")));
+        mockMvc.perform(get("/api/payment/SHOP/-100")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("NEGATIVE_VALUE")));
 
         mockMvc.perform(get("/api/money")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("5000")));
@@ -124,11 +116,11 @@ class RestTestcaseSpringbootApplicationTests {
     //проверяем случай когда у клиента не хватит денег из-за добавления комиссии
     @Test
     public void PaymentWithFeeGreaterThanBalance() throws Exception {
-        mockMvc.perform(get("/api/payment/Shop/4990")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("PaymentProcessed")));
+        mockMvc.perform(get("/api/payment/SHOP/4990")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("PAYMENT_PROCESSED")));
 
-        mockMvc.perform(get("/api/payment/Shop/10")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("NotEnoughMoneyOnTheAccount")));
+        mockMvc.perform(get("/api/payment/SHOP/10")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("NOT_ENOUGH_MONEY_ON_THE_ACCOUNT")));
 
         mockMvc.perform(get("/api/money")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("10")));

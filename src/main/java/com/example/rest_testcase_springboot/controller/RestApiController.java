@@ -1,12 +1,10 @@
 package com.example.rest_testcase_springboot.controller;
 
 
-
 import com.example.rest_testcase_springboot.service.PaymentService;
 import com.example.rest_testcase_springboot.service.util.PaymentStatus;
 import com.example.rest_testcase_springboot.service.util.PaymentType;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

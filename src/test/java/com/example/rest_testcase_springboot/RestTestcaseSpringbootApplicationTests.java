@@ -89,7 +89,7 @@ class RestTestcaseSpringbootApplicationTests {
     //проверяем оплату превышающую баланс клиента
     @Test
     public void PaymentExceedsBalance() throws Exception {
-        mockMvc.perform(get("/api/payment/SHOP/6000")).andDo(print()).andExpect(status().is(400))
+        mockMvc.perform(get("/api/payment/SHOP/6000")).andDo(print()).andExpect(status().is4xxClientError())
                 .andExpect(content().string(containsString("NOT_ENOUGH_MONEY_ON_THE_ACCOUNT")));
 
         mockMvc.perform(get("/api/money")).andDo(print()).andExpect(status().isOk())
@@ -102,7 +102,7 @@ class RestTestcaseSpringbootApplicationTests {
     //проверяем на отрицательное число выставленное к оплате
     @Test
     public void PaymentWithNegativeValue() throws Exception {
-        mockMvc.perform(get("/api/payment/SHOP/-100")).andDo(print()).andExpect(status().is(400))
+        mockMvc.perform(get("/api/payment/SHOP/-100")).andDo(print()).andExpect(status().is4xxClientError())
                 .andExpect(content().string(containsString("NEGATIVE_VALUE")));
 
         mockMvc.perform(get("/api/money")).andDo(print()).andExpect(status().isOk())

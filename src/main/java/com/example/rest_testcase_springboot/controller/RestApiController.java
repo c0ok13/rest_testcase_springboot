@@ -5,6 +5,8 @@ import com.example.rest_testcase_springboot.service.PaymentService;
 import com.example.rest_testcase_springboot.service.util.PaymentStatus;
 import com.example.rest_testcase_springboot.service.util.PaymentType;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +35,8 @@ public class RestApiController {
 
     // маппинг на обработку платежа
     @GetMapping("/payment/{type}/{amount}")
-    public PaymentStatus payment(@PathVariable("type") PaymentType paymentType, @PathVariable("amount") BigDecimal amount) {
-        return paymentService.purchasePayment(paymentType, amount);
+    public ResponseEntity<?> payment(@PathVariable("type") PaymentType paymentType, @PathVariable("amount") BigDecimal amount) {
+        PaymentStatus paymentStatus =paymentService.purchasePayment(paymentType, amount);
+        return new ResponseEntity<>(paymentStatus, HttpStatusCode.valueOf(paymentStatus.getStatusCode()));
     }
 }
